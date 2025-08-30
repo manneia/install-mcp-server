@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import JsonEditor from '../components/JsonEditor.vue'
 
 // 插件数据模型

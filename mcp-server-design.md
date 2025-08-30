@@ -31,7 +31,7 @@
 
 ### 4. 用户交互接口 (Web UI)
 - 展示当前已安装的 MCP 插件列表；
-- 提供“安装新插件”按钮；
+- 提供"安装新插件"按钮；
 - 弹出 JSON 编辑器供用户输入插件配置；
 - 支持插件的卸载操作。
 
@@ -62,14 +62,57 @@ mcp-server/
 │   └── registry.json          # 插件注册表
 ├── frontend/
 │   ├── public/
-│   └── src/
-│       ├── components/
-│       ├── views/
-│       ├── App.vue
-│       └── main.js
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   └── JsonEditor.vue # JSON 编辑器组件
+│   │   ├── views/
+│   │   │   └── PluginManager.vue # 插件管理页面
+│   │   ├── App.vue
+│   │   └── main.ts
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
 ├── main.py                    # 启动入口
 └── README.md
 ```
+
+---
+
+## 前端项目实现细节
+
+### 技术栈
+- **构建工具**: Vite
+- **框架**: Vue 3 (TypeScript)
+- **UI 组件库**: Element Plus
+- **HTTP 客户端**: Axios
+- **JSON 编辑器**: @json-editor/json-editor
+- **包管理器**: pnpm
+
+### 项目结构说明
+1. **main.ts**: 项目入口文件，初始化 Vue 应用并引入 Element Plus
+2. **App.vue**: 根组件，包含路由视图
+3. **views/PluginManager.vue**: 插件管理主页面，包含插件列表展示和操作功能
+4. **components/JsonEditor.vue**: 封装的 JSON 编辑器组件，用于插件配置输入
+
+### 核心功能实现
+
+#### 插件列表展示
+- 使用 Element Plus 的 `el-table` 组件展示插件信息
+- 每行显示插件名称、版本、描述和状态
+- 状态使用 `el-tag` 组件以不同颜色显示（运行中/已停止）
+
+#### 插件操作按钮
+- 启动/停止按钮根据插件当前状态启用/禁用
+- 卸载按钮始终可用
+- 所有按钮使用 Element Plus 的 `el-button` 组件
+
+#### 安装新插件流程
+1. 点击"安装新插件"按钮打开模态框
+2. 使用封装的 `JsonEditor` 组件提供 JSON 配置输入界面
+3. 用户填写配置后点击"安装"按钮
+4. 前端通过 Axios 发送 POST 请求到后端 `/plugins/install` 接口
+5. 后端处理完成后前端刷新插件列表
 
 ---
 
@@ -78,12 +121,12 @@ mcp-server/
 #### 已安装插件展示页
 - 使用 Element Plus 的表格组件展示插件列表；
 - 每一行显示插件名称、版本、描述和状态（运行中 / 已停止）；
-- 提供“启动”、“停止”、“卸载”按钮，使用 Element Plus 的按钮组件。
+- 提供"启动"、"停止"、"卸载"按钮，使用 Element Plus 的按钮组件。
 
 #### 安装新插件流程
-1. 点击“安装新插件”按钮；
+1. 点击"安装新插件"按钮；
 2. 弹出 Element Plus 的模态框（Dialog）；
-3. 模态框内嵌入一个 JSON 编辑器（如 vue-json-editor）；
+3. 模态框内嵌入一个 JSON 编辑器（如 @json-editor/json-editor）；
 4. 用户填写插件配置后点击提交；
 5. 前端通过 Axios 发送 POST 请求到后端 `/plugins/install` 接口；
 6. 后端处理安装逻辑并更新 `settings.json`；
@@ -142,7 +185,7 @@ def uninstall_plugin(name: str):
 ## 示例调用流程
 
 1. 用户打开 Web UI，查看已安装插件列表；
-2. 点击“安装新插件”，弹出 JSON 编辑器；
+2. 点击"安装新插件"，弹出 JSON 编辑器；
 3. 用户填写插件配置并提交；
 4. 后端接收到请求后：
    - 使用 `plugin_manager.install_plugin_from_json` 安装插件；

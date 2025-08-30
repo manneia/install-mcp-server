@@ -137,3 +137,7 @@ Windows/Globalization/ICU/
 # Temporary files
 tmp/
 temp/
+
+# Frontend build output
+frontend/dist/
+frontend/node_modules/

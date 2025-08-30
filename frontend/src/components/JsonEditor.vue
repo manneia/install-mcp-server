@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 
 // 定义props
@@ -29,7 +29,7 @@ const initEditor = () => {
     editor = new JSONEditor(editorRef.value, {
       schema: props.schema,
       startval: props.modelValue,
-      theme: 'bootstrap4',
+      theme: 'html',
       disable_collapse: true,
       disable_edit_json: true,
       disable_properties: true,
